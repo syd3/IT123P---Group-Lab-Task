@@ -74,7 +74,7 @@ namespace IT123P___Group_Lab_Task
             country = autoCompleteCountry.Text;
 
             // Replace &gender= value to selectedGender instead if you want pure text data, rather than int
-            request = (HttpWebRequest)WebRequest.Create("http://192.168.1.14/REST/add_record.php?name=" + name + "&school=" + school + "&country=" + country + "&gender=" + checkedItemId);
+            request = (HttpWebRequest)WebRequest.Create("http://192.168.1.14/REST/add_record.php?name=" + name + "&school=" + school + "&country=" + country + "&gender=" + selectedGender);
             response = (HttpWebResponse)request.GetResponse();
             StreamReader reader = new StreamReader(response.GetResponseStream());
             res = reader.ReadToEnd();
@@ -88,7 +88,7 @@ namespace IT123P___Group_Lab_Task
             country = autoCompleteCountry.Text;
 
             // Replace &gender= value to selectedGender instead if you want pure text data, rather than int
-            request = (HttpWebRequest)WebRequest.Create("http://192.168.1.14/REST/update_record.php?name=" + name + "&school=" + school + "&country=" + country + "&gender=" + checkedItemId);
+            request = (HttpWebRequest)WebRequest.Create("http://192.168.1.14/REST/update_record.php?name=" + name + "&school=" + school + "&country=" + country + "&gender=" + selectedGender);
             response = (HttpWebResponse)request.GetResponse();
             StreamReader reader = new StreamReader(response.GetResponseStream());
             res = reader.ReadToEnd();
@@ -107,22 +107,43 @@ namespace IT123P___Group_Lab_Task
             using JsonDocument doc = JsonDocument.Parse(result);
             JsonElement root = doc.RootElement;
 
-            var u1 = root[0]; // Implement loop if you plan to get more than 1 query result
+            try
+            {
+                var u1 = root[0]; // Implement loop if you plan to get more than 1 query result
 
-            // Get the searched values one by one
-            string searchedname = u1.GetProperty("name").ToString();
-            string searchedschool = u1.GetProperty("school").ToString();
-            string searchedcountry = u1.GetProperty("country").ToString();
-            int searchedgender = Convert.ToInt32(u1.GetProperty("gender").ToString()); // Remove this if you want to display the data thru pure text, and add the line below
-            // string searchedgender = u1.GetProperty("gender").ToString(); // For if displaying the data thru pure text
+                // Get the searched values one by one
+                string searchedname = u1.GetProperty("name").ToString();
+                string searchedschool = u1.GetProperty("school").ToString();
+                string searchedcountry = u1.GetProperty("country").ToString();
+                //int searchedgender = Convert.ToInt32(u1.GetProperty("gender").ToString()); // Remove this if you want to display the data thru pure text, and add the line below
+                string searchedgender = u1.GetProperty("gender").ToString(); // For if displaying the data thru pure text
+                
+                //gender.Check(searchedgender); // Remove if displaying data via pure text
+                // Toast.MakeText(this, searchedgender, ToastLength.Long).Show(); // For debugging
 
-            // Set the data values to the widgets
-            editName.Text = searchedname;
-            editSchool.Text = searchedschool;
-            autoCompleteCountry.Text = searchedcountry;
-            gender.Check(searchedgender); // Remove if displaying data via pure text
-
-            // Toast.MakeText(this, searchedgender, ToastLength.Long).Show(); // For debugging
+                // Set the data values to the widgets
+                editName.Text = searchedname;
+                editSchool.Text = searchedschool;
+                autoCompleteCountry.Text = searchedcountry;
+                for (int i = 0; i < gender.ChildCount; i++) //iterate through radio buttons to check for matching gender
+                {
+                    int id = gender.GetChildAt(i).Id;
+                    if (FindViewById(id) is RadioButton)
+                    {
+                        RadioButton rb = FindViewById<RadioButton>(id);
+                        rb.Checked = false;
+                        if (rb.Text == searchedgender)
+                        {
+                            rb.Checked = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Toast.MakeText(this, "User not found", ToastLength.Long).Show();
+            }
         }
 
         public void BackHome(object sender, EventArgs e)
