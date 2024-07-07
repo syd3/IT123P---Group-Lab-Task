@@ -18,22 +18,13 @@ namespace IT123P___Group_Lab_Task
         AutoCompleteTextView autoCompleteCountry;
         HttpWebResponse response;
         HttpWebRequest request;
-        String name = "", school = "", country = "", selectedGender = "", res = "", login_name = "";
+        String name = "", school = "", country = "", selectedGender = "", res = "";
         int checkedItemId = 0;
-
-        // The selected gender value is stored as an int in order to properly display the search results
-        // If you want pure text, consider the changes specified below each corresponding line
-
-        // Missing validation, so if unknown input is entered it returns a runtime error
-        // Change IP to your own local IP
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.nextlayout);
-            // Fetch the name of who logged in through Intent
-            login_name = Intent.GetStringExtra("Name"); // Not Needed?? Not being used anywhere
-            // ^ Can be used to display a welcome message?
 
             // Instantiate Widgets
             editName = FindViewById<EditText>(Resource.Id.editText1);
@@ -64,7 +55,7 @@ namespace IT123P___Group_Lab_Task
             checkedItemId = gender.CheckedRadioButtonId;
             RadioButton checkedRadioButton = FindViewById<RadioButton>(checkedItemId);
             selectedGender = checkedRadioButton.Text; // For converting the gender value into text, rather than int
-            gender.Check(checkedItemId); // ??
+            gender.Check(checkedItemId);
         }
 
         public void AddRecord(object sender, EventArgs e)
@@ -73,7 +64,6 @@ namespace IT123P___Group_Lab_Task
             school = editSchool.Text;
             country = autoCompleteCountry.Text;
 
-            // Replace &gender= value to selectedGender instead if you want pure text data, rather than int
             request = (HttpWebRequest)WebRequest.Create("http://192.168.1.14/REST/add_record.php?name=" + name + "&school=" + school + "&country=" + country + "&gender=" + selectedGender);
             response = (HttpWebResponse)request.GetResponse();
             StreamReader reader = new StreamReader(response.GetResponseStream());
@@ -87,7 +77,6 @@ namespace IT123P___Group_Lab_Task
             school = editSchool.Text;
             country = autoCompleteCountry.Text;
 
-            // Replace &gender= value to selectedGender instead if you want pure text data, rather than int
             request = (HttpWebRequest)WebRequest.Create("http://192.168.1.14/REST/update_record.php?name=" + name + "&school=" + school + "&country=" + country + "&gender=" + selectedGender);
             response = (HttpWebResponse)request.GetResponse();
             StreamReader reader = new StreamReader(response.GetResponseStream());
@@ -107,19 +96,15 @@ namespace IT123P___Group_Lab_Task
             using JsonDocument doc = JsonDocument.Parse(result);
             JsonElement root = doc.RootElement;
 
-            try
-            {
-                var u1 = root[0]; // Implement loop if you plan to get more than 1 query result
+            try {
+                var u1 = root[0];
+                Toast.MakeText(this, u1.ToString(), ToastLength.Long).Show();
 
                 // Get the searched values one by one
                 string searchedname = u1.GetProperty("name").ToString();
                 string searchedschool = u1.GetProperty("school").ToString();
                 string searchedcountry = u1.GetProperty("country").ToString();
-                //int searchedgender = Convert.ToInt32(u1.GetProperty("gender").ToString()); // Remove this if you want to display the data thru pure text, and add the line below
-                string searchedgender = u1.GetProperty("gender").ToString(); // For if displaying the data thru pure text
-                
-                //gender.Check(searchedgender); // Remove if displaying data via pure text
-                // Toast.MakeText(this, searchedgender, ToastLength.Long).Show(); // For debugging
+                string searchedgender = u1.GetProperty("gender").ToString();
 
                 // Set the data values to the widgets
                 editName.Text = searchedname;
@@ -139,9 +124,7 @@ namespace IT123P___Group_Lab_Task
                         }
                     }
                 }
-            }
-            catch (IndexOutOfRangeException ex)
-            {
+            } catch (IndexOutOfRangeException ex) {
                 Toast.MakeText(this, "User not found", ToastLength.Long).Show();
             }
         }

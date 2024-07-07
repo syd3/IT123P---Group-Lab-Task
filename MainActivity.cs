@@ -42,10 +42,8 @@ namespace IT123P___Group_Lab_Task
             res = reader.ReadToEnd();
             Toast.MakeText(this, res, ToastLength.Long).Show();
 
-            if (res.Contains("OK!"))
-            {
+            if (res.Contains("OK!")) {
                 Intent i = new Intent(this, typeof(NextActivity));
-                i.PutExtra("Name", uname); // Incase the name is used in the next activity
                 StartActivity(i);
             }
         }
