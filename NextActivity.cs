@@ -54,7 +54,7 @@ namespace IT123P___Group_Lab_Task
         {
             checkedItemId = gender.CheckedRadioButtonId;
             RadioButton checkedRadioButton = FindViewById<RadioButton>(checkedItemId);
-            selectedGender = checkedRadioButton.Text; // For converting the gender value into text, rather than int
+            selectedGender = checkedRadioButton.Text; // For converting the gender value into a string, rather than int
             gender.Check(checkedItemId);
         }
 
@@ -98,7 +98,6 @@ namespace IT123P___Group_Lab_Task
 
             try {
                 var u1 = root[0];
-                Toast.MakeText(this, u1.ToString(), ToastLength.Long).Show();
 
                 // Get the searched values one by one
                 string searchedname = u1.GetProperty("name").ToString();
@@ -110,15 +109,13 @@ namespace IT123P___Group_Lab_Task
                 editName.Text = searchedname;
                 editSchool.Text = searchedschool;
                 autoCompleteCountry.Text = searchedcountry;
-                for (int i = 0; i < gender.ChildCount; i++) //iterate through radio buttons to check for matching gender
-                {
+                for (int i = 0; i < gender.ChildCount; i++) { // Iterate through radiobuttons to check for matching gender
+                    
                     int id = gender.GetChildAt(i).Id;
-                    if (FindViewById(id) is RadioButton)
-                    {
+                    if (FindViewById(id) is RadioButton) {
                         RadioButton rb = FindViewById<RadioButton>(id);
                         rb.Checked = false;
-                        if (rb.Text == searchedgender)
-                        {
+                        if (rb.Text == searchedgender) {
                             rb.Checked = true;
                             break;
                         }
