@@ -98,6 +98,7 @@ namespace IT123P___Group_Lab_Task
 
             try {
                 var u1 = root[0];
+                Toast.MakeText(this, "Success", ToastLength.Short).Show();
 
                 // Get the searched values one by one
                 string searchedname = u1.GetProperty("name").ToString();
